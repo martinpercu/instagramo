@@ -1,0 +1,22 @@
+{% extends 'users/base.html' %}
+
+{% block head_content %}
+<title>Intagramo Sign In</title>
+{% endblock  %}
+
+{% block container %}
+
+    {% if error %}
+    <h3 style="color: red"> The username and/or password not found</h3>
+    {% endif %}
+
+    <form method="POST" action="{% url 'login' %}">
+        {% csrf_token %}
+
+        <input type="text" placeholder="Username" name="username"/>
+        <input type="password" placeholder="Password" name="password"/>
+
+        <button type="submit">Log in</button>
+    </form>
+
+{% endblock  %}
