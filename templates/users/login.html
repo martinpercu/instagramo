@@ -7,16 +7,27 @@
 {% block container %}
 
     {% if error %}
-    <h3 style="color: red"> The username and/or password not found</h3>
+    <p class="alert alert-danger">{{ error }}</p>
     {% endif %}
 
     <form method="POST" action="{% url 'login' %}">
         {% csrf_token %}
 
-        <input type="text" placeholder="Username" name="username"/>
-        <input type="password" placeholder="Password" name="password"/>
+        <div class="form-group">
+            <input class="form-control" type="text" placeholder="Username" name="username"/>
+        </div>
 
-        <button type="submit">Log in</button>
+        <div class="form-group">
+            <input class="form-control" type="password" placeholder="Password" name="password"/>
+        </div>
+
+        <button class="btn btn-primary btn-block mt-5" type="submit">Log in</button>
+
     </form>
+
+    {% if messageLogout %}
+    <p class="alert alert-warning" style="margin-top: 25px; margin-bottom: 0px; text-align: center">{{ messageLogout }}</p>
+    {% endif %}
+
 
 {% endblock  %}
