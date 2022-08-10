@@ -14,6 +14,15 @@ from .models import Profile
 # Create your views here.
 
 
+# def for an experimental django Middleware.... 
+def update_profile(request):
+    """ 
+    Update user profile .. atention!! experiment to use Middlewares    
+    """
+    return render(request, 'users/update_profile.html')
+
+
+
 def login_view(request):
     """ Login view """
 

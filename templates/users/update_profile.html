@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block head_content %}
+<title>@{{ request.user.username }} | Update profiles</title>
+{% endblock  %}
+
+{% block container %}
+    <h2 class="mt-5">@{{request.user.username }}</h2>
+{% endblock  %}
