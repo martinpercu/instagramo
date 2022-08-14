@@ -24,6 +24,7 @@ class ProfileFullDataCompletMiddleware:
     def __call__(self, request):
         """ Code to execute before the view is called"""
         if not request.user.is_anonymous:
+            # if not request.user.staff:  # This is to allow to go to admin BUT I thinks is not needed. Django 2 needed Django 4 not.
             profile = request.user.profile
             if not profile.picture or not profile.biography:
                 if request.path not in [reverse('update_profile'), reverse('logout') ]:

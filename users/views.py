@@ -13,14 +13,43 @@ from django.contrib.auth.models import User
 from .models import Profile
 # Create your views here.
 
+# Forms
+from users.forms import ProfileForm
 
 # def for an experimental django Middleware.... 
 def update_profile(request):
     """ 
     Update user profile .. atention!! experiment to use Middlewares    
     """
-    return render(request, 'users/update_profile.html')
+    profile = request.user.profile
 
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, request.FILES)
+        if form.is_valid():
+            data = form.cleaned_data
+
+            profile.website = data['website']
+            profile.biography = data['biography']
+            profile.phone_number = data['phone_number']
+            profile.picture = data['picture']
+
+            profile.save()
+            print(form.cleaned_data)
+
+            return redirect('update_profile')
+    else:
+        form = ProfileForm()
+
+
+    return render(
+        request = request,
+        template_name = 'users/update_profile.html',
+        context = {
+            'profile': profile,
+            'user': request.user,
+            'form': form
+        }
+    )
 
 
 def login_view(request):
