@@ -17,6 +17,8 @@ from .models import Profile
 from users.forms import ProfileForm
 
 # def for an experimental django Middleware.... 
+
+@login_required
 def update_profile(request):
     """ 
     Update user profile .. atention!! experiment to use Middlewares    
@@ -36,7 +38,7 @@ def update_profile(request):
             profile.save()
             print(form.cleaned_data)
 
-            return redirect('update_profile')
+            return redirect('feed')
     else:
         form = ProfileForm()
 
