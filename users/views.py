@@ -1,15 +1,43 @@
 """ This is the users view"""
 
+# Create your views here.
+
+
 # Django
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required  #nor really needed because is not possible to arrive the view if you are not already logged
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import TemplateView
+from django.views.generic import DetailView
+from django.urls import reverse
 
+# Models
+from django.contrib.auth.models import User
+from posts.models import Post
 
-# Create your views here.
 
 # Forms
 from users.forms import ProfileForm, SignupForm
+
+
+class UserDetailView(LoginRequiredMixin, DetailView):
+    """ User Detail View """
+
+    template_name = 'users/detail.html'
+    slug_field = 'username'
+    slug_url_kwarg = 'username'
+    queryset = User.objects.all()
+    context_object_name = 'user'
+
+    def get_context_data(self, **kwargs):
+        """ Add user's posts for the context """
+        context = super().get_context_data(**kwargs)
+        user = self.get_object()
+        context['posts'] = Post.objects.filter(user=user).order_by('-created')
+        return context
+
+
 
 # def for an experimental django Middleware.... 
 
@@ -33,7 +61,10 @@ def update_profile(request):
             profile.save()
             print(form.cleaned_data)
 
-            return redirect('feed')
+            # url = reverse('users:feed')
+
+            url = reverse('users:detail', kwargs={'username': request.user.username})
+            return redirect(url)
     else:
         form = ProfileForm()
 
@@ -62,7 +93,7 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         if user:
             login(request, user)
-            return redirect('feed')
+            return redirect('posts:feed')
         else:
             return render(request, 'users/login.html', {'error': 'The username and/or password not found'})
     return render(request, 'users/login.html')
@@ -82,7 +113,7 @@ def signup(request):
         form = SignupForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('login')
+            return redirect('users:login')
     else:
         form = SignupForm()
     return render(

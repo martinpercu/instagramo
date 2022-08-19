@@ -7,13 +7,15 @@ from datetime import datetime
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 # from django.http import HttpResponse
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import ListView
+
 
 # Forms
 from posts.forms import PostForm
 
 # Models
 from posts.models import Post
-
 
 
 # Create your views here.
@@ -49,12 +51,22 @@ from posts.models import Post
 # ]
 
 
-posts = Post.objects.all().order_by('-created')
+class PostsFeedView(LoginRequiredMixin, ListView):
+    """ Return all published posts """
 
-@login_required
-def list_posts(request):
-    """List eknowed posts"""
-    return render(request, 'posts/feed.html', {'posts': posts})
+    template_name = 'posts/feed.html'
+    model = Post
+    ordertin = ('-created')
+    paginate_by = 3
+    # context_object_name = 'posts'
+
+
+
+# posts = Post.objects.all().order_by('-created')
+# @login_required
+# def list_posts(request):
+#     """List eknowed posts"""
+#     return render(request, 'posts/feed.html', {'posts': posts})
 
 
 @login_required
