@@ -9,8 +9,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required  #nor really needed because is not possible to arrive the view if you are not already logged
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView
-from django.views.generic import DetailView
-from django.urls import reverse
+from django.views.generic import DetailView, FormView, UpdateView
+from django.urls import reverse , reverse_lazy
 
 # Models
 from django.contrib.auth.models import User
@@ -18,7 +18,9 @@ from posts.models import Post
 
 
 # Forms
-from users.forms import ProfileForm, SignupForm
+# from users.forms import ProfileForm
+from users.forms import SignupForm
+from users.models import Profile
 
 
 class UserDetailView(LoginRequiredMixin, DetailView):
@@ -41,43 +43,63 @@ class UserDetailView(LoginRequiredMixin, DetailView):
 
 # def for an experimental django Middleware.... 
 
-@login_required
-def update_profile(request):
-    """ 
-    Update user profile .. atention!! experiment to use Middlewares    
-    """
-    profile = request.user.profile
+# @login_required
+# def update_profile(request):
+#     """ 
+#     Update user profile .. atention!! experiment to use Middlewares    
+#     """
+#     profile = request.user.profile
 
-    if request.method == 'POST':
-        form = ProfileForm(request.POST, request.FILES)
-        if form.is_valid():
-            data = form.cleaned_data
+#     if request.method == 'POST':
+#         form = ProfileForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             data = form.cleaned_data
 
-            profile.website = data['website']
-            profile.biography = data['biography']
-            profile.phone_number = data['phone_number']
-            profile.picture = data['picture']
+#             profile.website = data['website']
+#             profile.biography = data['biography']
+#             profile.phone_number = data['phone_number']
+#             profile.picture = data['picture']
 
-            profile.save()
-            print(form.cleaned_data)
+#             profile.save()
+#             print(form.cleaned_data)
 
-            # url = reverse('users:feed')
+#             # url = reverse('users:feed')
 
-            url = reverse('users:detail', kwargs={'username': request.user.username})
-            return redirect(url)
-    else:
-        form = ProfileForm()
+#             url = reverse('users:detail', kwargs={'username': request.user.username})
+#             return redirect(url)
+#     else:
+#         form = ProfileForm()
 
 
-    return render(
-        request = request,
-        template_name = 'users/update_profile.html',
-        context = {
-            'profile': profile,
-            'user': request.user,
-            'form': form
-        }
-    )
+#     return render(
+#         request = request,
+#         template_name = 'users/update_profile.html',
+#         context = {
+#             'profile': profile,
+#             'user': request.user,
+#             'form': form
+#         }
+#     )
+
+
+
+class UpdateProfileView(LoginRequiredMixin, UpdateView):
+    """ Update Profile View for users """
+
+    template_name = 'users/update_profile.html'
+    model = Profile
+    fields = ['website', 'biography', 'phone_number', 'picture']
+
+    def get_object(self):
+        """ return user profile """
+        return self.request.user.profile
+
+    def get_success_url(self):
+        """ return to users profile """
+        username = self.object.user.username
+        return reverse('users:detail', kwargs={'username':username})
+    
+
 
 
 def login_view(request):
@@ -107,18 +129,34 @@ def logout_view(request):
     return render(request, 'users/login.html', {'messageLogout': 'You just logout.'})
 
 
-def signup(request):
-    """Signup View"""
-    if request.method == 'POST':
-        form = SignupForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('users:login')
-    else:
-        form = SignupForm()
-    return render(
-        request=request,
-        template_name='users/signup.html',
-        context={'form': form}
-    )
+# def signup(request):
+#     """Signup View"""
+#     if request.method == 'POST':
+#         form = SignupForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('users:login')
+#     else:
+#         form = SignupForm()
+#     return render(
+#         request=request,
+#         template_name='users/signup.html',
+#         context={'form': form}
+#     )
         
+
+class SignUpView(FormView):
+    """ Signup View """
+
+    template_name = 'users/signup.html'
+    form_class = SignupForm
+    success_url = reverse_lazy('users:login')
+
+    def form_valid(self, form):
+        """ Save form info in DB ---> Save new user """
+        form.save()
+
+        
+        return super().form_valid(form) 
+
+ 

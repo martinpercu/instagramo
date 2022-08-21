@@ -58,16 +58,16 @@ class SignupForm(forms.Form):
         data = self.cleaned_data
         data.pop('password_confirmation')
 
-        user = User.objects.create(**data)
+        user = User.objects.create_user(**data)
         profile = Profile(user=user)
         profile.save()
 
 
-class ProfileForm(forms.Form):
-    """ Profile form """
+# class ProfileForm(forms.Form):
+#     """ Profile form """
 
-    website = forms.URLField(max_length=200, required=True)
-    biography = forms.CharField(max_length=500, required=False)
-    phone_number = forms.CharField(max_length=14, required=False)
-    picture = forms.ImageField()
+#     website = forms.URLField(max_length=200, required=True)
+#     biography = forms.CharField(max_length=500, required=False)
+#     phone_number = forms.CharField(max_length=14, required=False)
+#     picture = forms.ImageField()
 
