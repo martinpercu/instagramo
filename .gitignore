@@ -4,6 +4,8 @@ venv/
 instagramoapp/secret_info.py
 instagramoapp/instagramoapp/secret_info.py
 
+media/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

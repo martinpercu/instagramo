@@ -1,0 +1,24 @@
+{% extends 'users/base.html' %}
+
+{% block head_content %}
+<title>Instagramo Sign up</title>
+{% endblock %}
+
+{% block container %}
+
+
+    <form action= "{% url 'users:signup' %}" method="POST">
+        {% csrf_token %}
+
+        {{ form.as_ul }}
+
+
+        <button class="btn btn-primary btn-block mt-5" type="submit">Register New User</button>
+
+    
+    </form>
+    <p class="mt-4" style="text-align:center">Already have an account? <a href="{% url 'users:login' %}""> Log in here. </a></p>
+
+
+
+{% endblock  %}

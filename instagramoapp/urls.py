@@ -13,19 +13,36 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
+# Django
 from django.contrib import admin
 from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
+from django.urls import include
 
-from instagramoapp import views as local_views
-from posts import views as posts_views
+# from instagramoapp import views as local_views
+# from posts import views as posts_views
+# from users import views as users_views
 
 
 urlpatterns = [
-    # path('admin/', admin.site.urls),
-    path('hello/', local_views.hello_world),
-    path('console/', local_views.debugger_console),
-    path('sorted/', local_views.sorted_numbers),
-    path('hi/<str:name>/<int:age>', local_views.say_hi),
 
-    path('posts/', posts_views.list_posts)
-]
+    path('admin/', admin.site.urls),
+
+    path('', include(('posts.url', 'posts'), namespace='posts')),
+
+# The paths "commented" down are now in the folder "post" in the file "url.py"
+    # path('', posts_views.list_posts, name='feed'),
+    # path('posts/new/', posts_views.create_post, name='create_post'),
+
+
+    path('user/', include(('users.url', 'users'), namespace='users')),
+
+# The paths "commented" down are now in the folder "post" in the file "url.py"
+    # path('users/login/', users_views.login_view, name='login'),
+    # path('users/logout/', users_views.logout_view, name='logout'),
+    # path('users/signup/', users_views.signup, name='signup'),
+    # path('users/me/profile/', users_views.update_profile, name='update_profile')
+
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
