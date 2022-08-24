@@ -14,6 +14,8 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 import dj_database_url
 import os
 
+from django.test.runner import DiscoverRunner
+
 from pathlib import Path
 
 # from .secret_info import secret_key
