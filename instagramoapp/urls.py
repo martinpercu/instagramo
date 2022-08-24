@@ -25,6 +25,10 @@ from django.urls import include
 # from posts import views as posts_views
 # from users import views as users_views
 
+# for heroku ???
+# from django.views.static import serve
+# from django.conf.urls import url
+
 
 urlpatterns = [
 

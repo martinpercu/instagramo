@@ -1,2 +1,2 @@
-web: gunicorn instagramoapp.wsgi
+web: gunicorn instagramoapp.wsgi --log-file -
 
